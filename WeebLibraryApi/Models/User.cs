@@ -4,6 +4,10 @@ namespace WeebLibraryApi.Models
 {
     public class User
     {
+        public User()
+        {
+            UserAnimeMangas = new HashSet<UserAnimeManga>();
+        }
         public int UserId {get; set;}
         public string Username {get; set;}
 
@@ -11,6 +15,6 @@ namespace WeebLibraryApi.Models
 
         public string Email {get; set;}
 
-        public List<UserAnimeManga> UserAnimeMangas {get; set;}
+        public ICollection<UserAnimeManga> UserAnimeMangas {get; set;}
     }
 }

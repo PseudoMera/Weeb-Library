@@ -27,8 +27,8 @@ namespace WeebLibraryApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WeebLibraryContext>(opt => opt.UseInMemoryDatabase("WeebLibrary"));
-            
+            //services.AddDbContext<WeebLibraryContext>(opt => opt.UseInMemoryDatabase("WeebLibrary"));
+            services.AddDbContext<WeebLibraryContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("WeebLibraryContext")));
             services.AddControllers();
         }
 
