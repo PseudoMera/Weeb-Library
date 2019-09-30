@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeebLibraryApi.Models;
 
 namespace WeebLibraryApi.Migrations
 {
     [DbContext(typeof(WeebLibraryContext))]
-    partial class WeebLibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20190930035127_Added_unique_constrain_to_animemanga_table")]
+    partial class Added_unique_constrain_to_animemanga_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

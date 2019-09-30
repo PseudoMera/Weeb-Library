@@ -34,9 +34,13 @@ namespace WeebLibraryApi.Models
                 .WithMany(sc => sc.UserAnimeMangas)
                 .HasForeignKey(u => u.UserId);
 
-                    modelBuilder.Entity<User>()
-                    .HasIndex(u => u.Email)
-                    .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<AnimeManga>()
+                .HasIndex(u => u.MalCode)
+                .IsUnique();
         }
      
 

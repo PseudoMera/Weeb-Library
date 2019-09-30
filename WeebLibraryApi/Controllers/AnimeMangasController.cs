@@ -77,11 +77,16 @@ namespace WeebLibraryApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<AnimeManga>> PostAnimeManga(AnimeManga animeManga)
+        public async Task<ActionResult<AnimeManga>> PostAnimeManga(User user, AnimeManga animeManga)
         {
-            _context.AnimeMangas.Add(animeManga);
-            await _context.SaveChangesAsync();
-
+            //If the anime/manga does not exist, we should add it and link it to the useranimemangatable
+            //else we should just make a link in the intermediate table
+            var myAnimeManga = _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {animeManga.MalCode}");
+            if(myAnimeManga == null) 
+            {
+                _context.AnimeMangas.Add(animeManga);
+                await _context.SaveChangesAsync();
+            }
             return CreatedAtAction("GetAnimeManga", new { id = animeManga.AnimeMangaId }, animeManga);
         }
 
