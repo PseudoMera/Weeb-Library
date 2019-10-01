@@ -77,27 +77,62 @@ namespace WeebLibraryApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<UserAnimeManga>> PostUserAnimeManga(UserAnimeManga userAnimeManga)
+        public async Task<ActionResult<UserAnimeManga>> PostAnimeManga(Helper helper)
         {
-            _context.UserAnimeMangas.Add(userAnimeManga);
-            try
+            //If the anime/manga does not exist, we should add it and link it to the useranimemangatable
+            //else we should just make a link in the intermediate table
+            var myAnimeManga =  new AnimeManga();
+            var user = new User();
+            try {
+               myAnimeManga =  _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {helper.AnimeManga.MalCode}").First();
+            } 
+            catch(System.Exception e) 
             {
+                _context.AnimeMangas.Add(helper.AnimeManga);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserAnimeMangaExists(userAnimeManga.UserId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                myAnimeManga =  _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {helper.AnimeManga.MalCode}").First();
             }
 
-            return CreatedAtAction("GetUserAnimeManga", new { id = userAnimeManga.UserId }, userAnimeManga);
+            try {
+                user = _context.Users.FromSqlInterpolated($"SELECT * FROM Users WHERE Email = {helper.Email}").First();
+
+            }
+            catch(System.Exception e)
+            {
+                return NotFound();
+            }
+
+            UserAnimeManga userAnimeManga= new UserAnimeManga();
+            userAnimeManga.AnimeMangaId = myAnimeManga.AnimeMangaId;
+            userAnimeManga.UserId = user.UserId;
+            _context.UserAnimeMangas.Add(userAnimeManga);
+            await _context.SaveChangesAsync();
+            
+            return CreatedAtAction("GetUserAnimeManga", new { id = userAnimeManga.AnimeMangaId }, userAnimeManga);
         }
+        
+        // [HttpPost]
+        // public async Task<ActionResult<UserAnimeManga>> PostUserAnimeManga(UserAnimeManga userAnimeManga)
+        // {
+        //     _context.UserAnimeMangas.Add(userAnimeManga);
+        //     try
+        //     {
+        //         await _context.SaveChangesAsync();
+        //     }
+        //     catch (DbUpdateException)
+        //     {
+        //         if (UserAnimeMangaExists(userAnimeManga.UserId))
+        //         {
+        //             return Conflict();
+        //         }
+        //         else
+        //         {
+        //             throw;
+        //         }
+        //     }
+
+        //     return CreatedAtAction("GetUserAnimeManga", new { id = userAnimeManga.UserId }, userAnimeManga);
+        // }
 
         // DELETE: api/UserAnimeManga/5
         [HttpDelete("{id}")]

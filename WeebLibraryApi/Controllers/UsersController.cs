@@ -31,6 +31,7 @@ namespace WeebLibraryApi.Controllers
         [HttpGet("login")]
         public ActionResult<User> GetUser(User user)
         {
+           // var user2 = _context.Users.Where(s => s.Email == user.Email).First();
             var user2 = _context.Users.FromSqlInterpolated($"SELECT * FROM Users WHERE Email = {user.Email}").First();
             if (user2 == null)
             {
@@ -42,6 +43,22 @@ namespace WeebLibraryApi.Controllers
             }
 
             return user2;
+        }
+
+        
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> PostUser(User user)
+        {
+            if(string.IsNullOrEmpty(user.Password) || 
+               string.IsNullOrEmpty(user.Username) || 
+               string.IsNullOrEmpty(user.Email))
+            {
+                return BadRequest();
+            }
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
         }
 
         [HttpGet("animes")]
@@ -72,6 +89,7 @@ namespace WeebLibraryApi.Controllers
             return animeManga;
         }
 
+    
         // PUT: api/User/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -109,20 +127,6 @@ namespace WeebLibraryApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
 
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            if(string.IsNullOrEmpty(user.Password) || 
-               string.IsNullOrEmpty(user.Username) || 
-               string.IsNullOrEmpty(user.Email))
-            {
-                return BadRequest();
-            }
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
-        }
 
         // DELETE: api/User/5
         // [HttpDelete("{id}")]
