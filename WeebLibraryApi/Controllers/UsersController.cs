@@ -63,6 +63,15 @@ namespace WeebLibraryApi.Controllers
             return animeManga;
         }
 
+        [HttpGet("animesandmangas")]
+        public async Task<ActionResult<List<AnimeManga>>> GetUserAnimesAndMangas(User user)
+        {
+            var user2 = _context.Users.FromSqlInterpolated($"SELECT * FROM Users WHERE Email = {user.Email}").First();
+            var animeManga = await _context.AnimeMangas.FromSqlInterpolated(
+                $"SELECT AnimeMangas.AnimeMangaId,ImageURL, Title, [Type], MalCode, UserId FROM AnimeMangas INNER JOIN UserAnimeMangas ON AnimeMangas.AnimeMangaId = UserAnimeMangas.AnimeMangaId WHERE UserAnimeMangas.UserId = {user2.UserId}").ToListAsync();
+            return animeManga;
+        }
+
         // PUT: api/User/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
