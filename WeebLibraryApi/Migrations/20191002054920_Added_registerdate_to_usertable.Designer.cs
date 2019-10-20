@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeebLibraryApi.Models;
 
 namespace WeebLibraryApi.Migrations
 {
     [DbContext(typeof(WeebLibraryContext))]
-    partial class WeebLibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20191002054920_Added_registerdate_to_usertable")]
+    partial class Added_registerdate_to_usertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +62,7 @@ namespace WeebLibraryApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RegisterDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2").HasDefaultValue(DateTime.Now);
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
@@ -70,6 +72,8 @@ namespace WeebLibraryApi.Migrations
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
+
+                    
 
                     b.ToTable("Users");
                 });

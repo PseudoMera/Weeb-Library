@@ -1,13 +1,16 @@
+using System;
 using System.Collections.Generic;
+
+
 
 namespace WeebLibraryApi.Models
 {
     public class User
     {
-        public User()
-        {
-            UserAnimeMangas = new HashSet<UserAnimeManga>();
-        }
+        // public User()
+        // {
+        //     UserAnimeMangas = new HashSet<UserAnimeManga>();
+        // }
         public int UserId {get; set;}
         public string Username {get; set;}
 
@@ -15,6 +18,8 @@ namespace WeebLibraryApi.Models
 
         public string Email {get; set;}
 
-        public ICollection<UserAnimeManga> UserAnimeMangas {get; set;}
+        public DateTime RegisterDate {get; set;}
+
+     //   public ICollection<UserAnimeManga> UserAnimeMangas {get; set;}
     }
 }

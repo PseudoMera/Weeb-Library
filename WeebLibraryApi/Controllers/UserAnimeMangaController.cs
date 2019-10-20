@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -76,6 +77,7 @@ namespace WeebLibraryApi.Controllers
         // POST: api/UserAnimeManga
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [EnableCors("AllowMyOrigin")]
         [HttpPost]
         public async Task<ActionResult<UserAnimeManga>> PostAnimeManga(Helper helper)
         {
@@ -108,8 +110,90 @@ namespace WeebLibraryApi.Controllers
             _context.UserAnimeMangas.Add(userAnimeManga);
             await _context.SaveChangesAsync();
             
-            return CreatedAtAction("GetUserAnimeManga", new { id = userAnimeManga.AnimeMangaId }, userAnimeManga);
+            return Ok();
         }
+        [EnableCors("AllowMyOrigin")]
+        [HttpPost("exist")]
+        public ActionResult<Helper> PostAnimeMangaExists(Helper helper)
+        {
+            //If the anime/manga does not exist, we should add it and link it to the useranimemangatable
+            //else we should just make a link in the intermediate table
+            var myAnimeManga =  new AnimeManga();
+            var user = new User();
+            try {
+               myAnimeManga =  _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {helper.AnimeManga.MalCode}").First();
+            } 
+            catch(System.Exception e) 
+            {
+                return NotFound();
+                // _context.AnimeMangas.Add(helper.AnimeManga);
+                // await _context.SaveChangesAsync();
+                // myAnimeManga =  _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {helper.AnimeManga.MalCode}").First();
+            }
+
+            try {
+                user = _context.Users.FromSqlInterpolated($"SELECT * FROM Users WHERE Email = {helper.Email}").First();
+                
+            }
+            catch(System.Exception e)
+            {
+                return NotFound();
+            }
+
+            UserAnimeManga userAnimeManga= new UserAnimeManga();
+            
+            try 
+            {
+                userAnimeManga = _context.UserAnimeMangas.FromSqlInterpolated($"SELECT * FROM UserAnimeMangas WHERE UserId = {user.UserId} AND AnimeMangaId = {myAnimeManga.AnimeMangaId}").First();
+            }
+            catch(System.Exception e)
+            {
+                return NotFound();
+            }
+            
+            return Ok(userAnimeManga);
+        }
+        
+        [EnableCors("AllowMyOrigin")]
+        [HttpDelete("delete")]
+        public async Task<ActionResult<UserAnimeManga>> DeleteUserAnimeManga(Helper helper)
+        {
+
+            var myAnimeManga =  new AnimeManga();
+            var user = new User();
+            try {
+               myAnimeManga =  _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {helper.AnimeManga.MalCode}").First();
+            } 
+            catch(System.Exception e) 
+            {
+                return NotFound();
+            }
+
+            try {
+                user = _context.Users.FromSqlInterpolated($"SELECT * FROM Users WHERE Email = {helper.Email}").First();           
+            }
+            catch(System.Exception e)
+            {
+                return NotFound();
+            }
+
+            UserAnimeManga userAnimeManga= new UserAnimeManga();
+            
+            try 
+            {
+                userAnimeManga = _context.UserAnimeMangas.FromSqlInterpolated($"SELECT * FROM UserAnimeMangas WHERE UserId = {user.UserId} AND AnimeMangaId = {myAnimeManga.AnimeMangaId}").First();
+                _context.UserAnimeMangas.Remove(userAnimeManga);
+                //_context.UserAnimeMangas.FromSqlInterpolated($"DELETE FROM UserAnimeMangas WHERE AnimeMangaId = (SELECT AnimeMangaId FROM AnimeMangas WHERE AnimeMangaId = {myAnimeManga.AnimeMangaId}) AND UserId = (SELECT UserId FROM Users WHERE UserId = {user.UserId})");
+                await _context.SaveChangesAsync();
+            }
+            catch(System.Exception e)
+            {
+                return NotFound();
+            }
+            
+            return Ok(userAnimeManga);
+        }
+        
         
         // [HttpPost]
         // public async Task<ActionResult<UserAnimeManga>> PostUserAnimeManga(UserAnimeManga userAnimeManga)
@@ -135,20 +219,33 @@ namespace WeebLibraryApi.Controllers
         // }
 
         // DELETE: api/UserAnimeManga/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<UserAnimeManga>> DeleteUserAnimeManga(int id)
-        {
-            var userAnimeManga = await _context.UserAnimeMangas.FindAsync(id);
-            if (userAnimeManga == null)
-            {
-                return NotFound();
-            }
+        // [HttpDelete("delete")]
+        // public async Task<ActionResult<UserAnimeManga>> DeleteUserAnimeManga(Helper helper)
+        // {
+        //     var userAnimeManga = await _context.Users.FindAsync(helper.Email);
+        //     if (userAnimeManga == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            _context.UserAnimeMangas.Remove(userAnimeManga);
-            await _context.SaveChangesAsync();
+        //     _context.UserAnimeMangas.Remove(userAnimeManga);
+        //     await _context.SaveChangesAsync();
 
-            return userAnimeManga;
-        }
+        //     return userAnimeManga;
+        // }
+
+
+            // var userAnimeManga = await _context.Users.FindAsync(helper.Email);
+            // if (userAnimeManga == null)
+            // {
+            //     return NotFound();
+            // }
+
+            // _context.UserAnimeMangas.Remove(userAnimeManga);
+            // await _context.SaveChangesAsync();
+
+            // return userAnimeManga;
+        
 
         private bool UserAnimeMangaExists(int id)
         {

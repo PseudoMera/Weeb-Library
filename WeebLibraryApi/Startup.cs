@@ -27,6 +27,9 @@ namespace WeebLibraryApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => {
+                options.AddPolicy("AllowMyOrigin", builder => builder.WithOrigins("http://mysite.com").AllowAnyOrigin());
+            });
             //services.AddDbContext<WeebLibraryContext>(opt => opt.UseInMemoryDatabase("WeebLibrary"));
             services.AddDbContext<WeebLibraryContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("WeebLibraryContext")));
             services.AddControllers();
@@ -39,6 +42,8 @@ namespace WeebLibraryApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("AllowMyOrigin");
 
             app.UseHttpsRedirection();
 

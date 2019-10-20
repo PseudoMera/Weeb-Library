@@ -24,15 +24,15 @@ namespace WeebLibraryApi.Models
 
             
 
-            modelBuilder.Entity<UserAnimeManga>()
-                .HasOne<AnimeManga>(am => am.AnimeManga)
-                .WithMany(sc => sc.UserAnimeMangas)
-                .HasForeignKey(am => am.AnimeMangaId);
+            // modelBuilder.Entity<UserAnimeManga>()
+            //     .HasOne<AnimeManga>(am => am.AnimeManga)
+            //     .WithMany(sc => sc.UserAnimeMangas)
+            //     .HasForeignKey(am => am.AnimeMangaId);
 
-            modelBuilder.Entity<UserAnimeManga>()
-                .HasOne<User>(u => u.User)
-                .WithMany(sc => sc.UserAnimeMangas)
-                .HasForeignKey(u => u.UserId);
+            // modelBuilder.Entity<UserAnimeManga>()
+            //     .HasOne<User>(u => u.User)
+            //     .WithMany(sc => sc.UserAnimeMangas)
+            //     .HasForeignKey(u => u.UserId);
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
