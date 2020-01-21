@@ -30,7 +30,7 @@ namespace WeebLibraryApi
             services.AddCors(options => {
                 options.AddPolicy("AllowMyOrigin", builder => builder.WithOrigins("http://mysite.com").AllowAnyOrigin());
             });
-            //services.AddDbContext<WeebLibraryContext>(opt => opt.UseInMemoryDatabase("WeebLibrary"));
+            // services.AddDbContext<WeebLibraryContext>(opt => opt.UseInMemoryDatabase("WeebLibrary"));
             services.AddDbContext<WeebLibraryContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("WeebLibraryContext")));
             services.AddControllers();
         }

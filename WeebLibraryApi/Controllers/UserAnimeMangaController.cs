@@ -90,6 +90,7 @@ namespace WeebLibraryApi.Controllers
             } 
             catch(System.Exception e) 
             {
+                Console.Write(e);
                 _context.AnimeMangas.Add(helper.AnimeManga);
                 await _context.SaveChangesAsync();
                 myAnimeManga =  _context.AnimeMangas.FromSqlInterpolated($"SELECT * FROM AnimeMangas WHERE MalCode = {helper.AnimeManga.MalCode}").First();
@@ -101,6 +102,7 @@ namespace WeebLibraryApi.Controllers
             }
             catch(System.Exception e)
             {
+                Console.Write(e);
                 return NotFound();
             }
 
@@ -125,6 +127,8 @@ namespace WeebLibraryApi.Controllers
             } 
             catch(System.Exception e) 
             {
+                Console.Write(e);
+
                 return NotFound();
                 // _context.AnimeMangas.Add(helper.AnimeManga);
                 // await _context.SaveChangesAsync();
@@ -137,6 +141,8 @@ namespace WeebLibraryApi.Controllers
             }
             catch(System.Exception e)
             {
+                Console.Write(e);
+
                 return NotFound();
             }
 
@@ -148,6 +154,8 @@ namespace WeebLibraryApi.Controllers
             }
             catch(System.Exception e)
             {
+                Console.Write(e);
+
                 return NotFound();
             }
             
@@ -166,6 +174,7 @@ namespace WeebLibraryApi.Controllers
             } 
             catch(System.Exception e) 
             {
+                Console.Write(e);
                 return NotFound();
             }
 
@@ -174,6 +183,7 @@ namespace WeebLibraryApi.Controllers
             }
             catch(System.Exception e)
             {
+                Console.Write(e);
                 return NotFound();
             }
 
@@ -188,63 +198,12 @@ namespace WeebLibraryApi.Controllers
             }
             catch(System.Exception e)
             {
+                Console.Write(e);
                 return NotFound();
             }
             
             return Ok(userAnimeManga);
         }
-        
-        
-        // [HttpPost]
-        // public async Task<ActionResult<UserAnimeManga>> PostUserAnimeManga(UserAnimeManga userAnimeManga)
-        // {
-        //     _context.UserAnimeMangas.Add(userAnimeManga);
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateException)
-        //     {
-        //         if (UserAnimeMangaExists(userAnimeManga.UserId))
-        //         {
-        //             return Conflict();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
-
-        //     return CreatedAtAction("GetUserAnimeManga", new { id = userAnimeManga.UserId }, userAnimeManga);
-        // }
-
-        // DELETE: api/UserAnimeManga/5
-        // [HttpDelete("delete")]
-        // public async Task<ActionResult<UserAnimeManga>> DeleteUserAnimeManga(Helper helper)
-        // {
-        //     var userAnimeManga = await _context.Users.FindAsync(helper.Email);
-        //     if (userAnimeManga == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     _context.UserAnimeMangas.Remove(userAnimeManga);
-        //     await _context.SaveChangesAsync();
-
-        //     return userAnimeManga;
-        // }
-
-
-            // var userAnimeManga = await _context.Users.FindAsync(helper.Email);
-            // if (userAnimeManga == null)
-            // {
-            //     return NotFound();
-            // }
-
-            // _context.UserAnimeMangas.Remove(userAnimeManga);
-            // await _context.SaveChangesAsync();
-
-            // return userAnimeManga;
         
 
         private bool UserAnimeMangaExists(int id)
